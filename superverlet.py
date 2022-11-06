@@ -56,7 +56,7 @@ try:
 except:
     pass
 
-pygame.display.set_caption("SuperVerlet v1.2.1 (beta)")
+pygame.display.set_caption("SuperVerlet v1.3.0 (beta)")
 
 # Initial FPS setup
 FPS = ARGS.fps
