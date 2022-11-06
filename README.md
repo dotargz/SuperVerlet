@@ -18,3 +18,4 @@ basic usage: superverlet.py [-h] [-w WIDTH] [-l HEIGHT] [-d] [-f FPS] [-g GRAVIT
 -t DELTATIME, --deltatime DELTATIME: Delta time for the simulation
 --use-experimental-rendering: Use experimental rendering
 ```
+*my favorite combo is ``superverlet.py --gravity 10 --sound --debug --use-experimental-rendering``*
