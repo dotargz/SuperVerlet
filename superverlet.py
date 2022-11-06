@@ -70,7 +70,8 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 try:
-    FONT = pygame.font.Font(resource_path('assets/fonts/UbuntuMono-Bold.ttf'), 32)
+    FONT = pygame.font.Font(resource_path(
+        'assets/fonts/UbuntuMono-Bold.ttf'), 32)
 except:
     FONT = pygame.font.SysFont('Monospace', 32)
 
@@ -97,11 +98,11 @@ dtCounterRect.center = ((dtCounterRect.width/2)+4,
 # Sound Setup
 try:
     if ARGS.sound:
-        spawn_sound = pygame.mixer.Sound(resource_path('assets/sounds/spawn.wav'))
+        spawn_sound = pygame.mixer.Sound(
+            resource_path('assets/sounds/spawn.wav'))
         spawn_sound.set_volume(0.05)
 except:
     pass
-
 
 
 # Function setup
@@ -146,7 +147,8 @@ class Circle(pygame.sprite.Sprite):
         self.acceleration = self.acceleration + acc
 
     def draw(self, surface):
-        draw_circle(surface, self.position_current[0], self.position_current[1], self.radius, WHITE)
+        draw_circle(
+            surface, self.position_current[0], self.position_current[1], self.radius, WHITE)
         if DEBUG:
             self.drawvelocity(surface, 3, RED)
 
@@ -265,7 +267,7 @@ while Running:
     # cursor (hollow circle)
     draw_circle(DISPLAYSURF, *pygame.mouse.get_pos(), ARGS.radius, WHITE)
     gfxdraw.aacircle(DISPLAYSURF, *pygame.mouse.get_pos(),
-                        ARGS.radius+1, BLACK)
+                     ARGS.radius+1, BLACK)
 
     for obj in SOLVER.getInstances():
         obj.draw(DISPLAYSURF)
