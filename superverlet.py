@@ -1,9 +1,28 @@
 import pygame
 import sys
+import argparse
 import uuid
 import math
 import os
 import numpy as np
+
+parser = argparse.ArgumentParser("superverlet.py")
+parser.add_argument("-w", "--width", type=int, default=852,
+                    help="Width of the window")
+parser.add_argument("-l", "--height", type=int,
+                    default=480, help="Height of the window")
+parser.add_argument("-d", "--debug", action="store_true",
+                    help="Enable debug mode on startup")
+parser.add_argument("-f", "--fps", type=int, default=60,
+                    help="Frames per second")
+parser.add_argument("-g", "--gravity", type=float, default=9.81,
+                    help="Amount of gravity applied to the each object")
+parser.add_argument("-s", "--sound", action="store_true",
+                    help="Enable sound")
+ARGS = parser.parse_args()
+print("Launching SuperVerlet with the following arguments:")
+for k,v in parser.parse_args().__dict__.items():
+    print('%s: %s' % (k, v))
 
 pygame.init()
 
@@ -20,14 +39,15 @@ def resource_path(relative_path):
 
 
 # Window setup
-DISPLAYSURF = pygame.display.set_mode((852, 480), pygame.RESIZABLE)
+DISPLAYSURF = pygame.display.set_mode(
+    (ARGS.width, ARGS.height), pygame.RESIZABLE)
 SCREEN_WIDTH, SCREEN_HEIGHT = DISPLAYSURF.get_size()
 logo = pygame.image.load(resource_path("assets/img/logo.png"))
 pygame.display.set_icon(logo)
-pygame.display.set_caption("SuperVerlet v1.1.0 (beta)")
+pygame.display.set_caption("SuperVerlet v1.2.1 (beta)")
 
 # Initial FPS setup
-FPS = 60
+FPS = ARGS.fps
 FramePerSec = pygame.time.Clock()
 
 # Global variables
@@ -37,7 +57,7 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 FONT = pygame.font.Font(resource_path('assets/fonts/UbuntuMono-Bold.ttf'), 32)
-DEBUG = False
+DEBUG = ARGS.debug
 
 # UI Setup
 # Render on the top left corner, and account for rectangle size
@@ -55,11 +75,6 @@ dtCounter = FONT.render('dt:', True, BLACK, WHITE)
 dtCounterRect = dtCounter.get_rect()
 dtCounterRect.center = ((dtCounterRect.width/2)+4,
                         (dtCounterRect.height/2)+fpsCounterRect.height+ObjcounterRect.height)
-
-debugTracker = FONT.render('Debug:', True, BLACK, WHITE)
-debugTrackerRect = debugTracker.get_rect()
-debugTrackerRect.center = ((debugTrackerRect.width/2)+4,
-                           (debugTrackerRect.height/2)+fpsCounterRect.height+dtCounterRect.height+ObjcounterRect.height)
 
 # Cursor setup
 cursor = pygame.sprite.Sprite()
@@ -80,6 +95,8 @@ def totuple(a):
         return a
 
 # Circle (Physics object)
+
+
 class Circle(pygame.sprite.Sprite):
     def __init__(self, starting_pos=[SCREEN_WIDTH/2, SCREEN_HEIGHT/2]):
         super().__init__()
@@ -120,7 +137,7 @@ class Circle(pygame.sprite.Sprite):
 
 
 class Solver():
-    def __init__(self, gravity=[0, 1000]):
+    def __init__(self, gravity):
         self.gravity = np.array(gravity)
 
     def update(self, dt):
@@ -172,13 +189,12 @@ class Solver():
 
 
 # Runtime Settings
-dt = 1/FPS
+dt = 1/60
 Running = True
 
 # Definitions
 objects = {}
-SOLVER = Solver(gravity=[0, 750])
-
+SOLVER = Solver(gravity=[0, ARGS.gravity*100])
 
 while Running:
     for event in pygame.event.get():
@@ -187,7 +203,8 @@ while Running:
                 pos = pygame.mouse.get_pos()
                 pos = np.asarray(pos)
                 objects[uuid.uuid4()] = Circle(pos)
-                # pygame.mixer.Sound.play(spawn_sound)
+                if ARGS.sound:
+                    pygame.mixer.Sound.play(spawn_sound)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_r:
                 objects = {}
@@ -217,16 +234,6 @@ while Running:
 
         dtCounter = FONT.render(f'DT: {round(dt, 5)}', True, BLACK, WHITE)
         DISPLAYSURF.blit(dtCounter, dtCounterRect)
-
-        debugTracker = FONT.render(f'DEBUG: {str(DEBUG)}', True, BLACK, WHITE)
-        debugTrackerRect.center = ((debugTrackerRect.width/2)+4,
-                                   (debugTrackerRect.height/2)+fpsCounterRect.height+dtCounterRect.height+ObjcounterRect.height)
-        DISPLAYSURF.blit(debugTracker, debugTrackerRect)
-    else:
-        debugTracker = FONT.render(f'DEBUG: {str(DEBUG)}', True, BLACK, WHITE)
-        debugTrackerRect.center = (
-            (debugTrackerRect.width/2)+4, (debugTrackerRect.height/2))
-        DISPLAYSURF.blit(debugTracker, debugTrackerRect)
 
     cursor.rect.center = pygame.mouse.get_pos()
     DISPLAYSURF.blit(cursor.image, cursor.rect)

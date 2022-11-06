@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['main.py'],
+    ['superverlet.py'],
     pathex=[],
     binaries=[],
     datas=[('assets/img/*','assets/img'),('assets/fonts/*','assets/fonts'),('assets/sounds/*','assets/sounds')],
