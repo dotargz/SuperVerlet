@@ -1,10 +1,11 @@
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
 from pygame import gfxdraw
 import sys
 import argparse
 import uuid
 import math
-import os
 import numpy as np
 
 parser = argparse.ArgumentParser("superverlet.py")
